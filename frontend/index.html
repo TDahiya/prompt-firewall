@@ -5,29 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prompt Firewall</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #1a1a1a;
-      --sidebar-bg: #141414;
-      --surface: #242424;
-      --surface2: #2e2e2e;
-      --border: #333;
-      --border-light: #444;
-      --text: #ececec;
-      --text-secondary: #a0a0a0;
-      --text-tertiary: #707070;
-      --accent: #d97706;
-      --accent-soft: rgba(217,119,6,0.12);
-      --green: #34d399;
-      --green-soft: rgba(52,211,153,0.12);
-      --red: #f87171;
-      --red-soft: rgba(248,113,113,0.12);
-      --yellow: #fbbf24;
-      --yellow-soft: rgba(251,191,36,0.12);
-      --blue: #60a5fa;
-      --user-bubble: #2e2e2e;
-      --assistant-bubble: transparent;
+      --bg: #f9f5ef;
+      --sidebar-bg: #f2ebe0;
+      --surface: #ffffff;
+      --surface-hover: #f5f0e8;
+      --border: #e8dfd3;
+      --border-light: #ede6da;
+      --text: #1a1613;
+      --text-secondary: #5c5549;
+      --text-tertiary: #9a8f82;
+      --accent: #c96442;
+      --accent-hover: #b85a3a;
+      --accent-soft: rgba(201,100,66,0.08);
+      --green: #2e7d5b;
+      --green-soft: rgba(46,125,91,0.08);
+      --red: #c44b3f;
+      --red-soft: rgba(196,75,63,0.08);
+      --yellow: #a17b2e;
+      --yellow-soft: rgba(161,123,46,0.08);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -37,222 +35,233 @@
       height: 100vh;
       display: flex;
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ── Sidebar ── */
     .sidebar {
-      width: 260px;
-      min-width: 260px;
+      width: 256px;
+      min-width: 256px;
       background: var(--sidebar-bg);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
     .sidebar-header {
-      padding: 20px 16px 16px;
-      border-bottom: 1px solid var(--border);
+      padding: 24px 20px 20px;
     }
     .sidebar-header h1 {
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
     }
-    .sidebar-header h1 span { color: var(--accent); }
     .sidebar-header p {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-tertiary);
-      margin-top: 4px;
-      line-height: 1.4;
+      margin-top: 6px;
+      line-height: 1.5;
     }
     .sidebar-section {
-      padding: 12px 16px 8px;
-      font-size: 10px;
+      padding: 16px 20px 8px;
+      font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       color: var(--text-tertiary);
     }
     .sidebar-body {
       flex: 1;
       overflow-y: auto;
-      padding-bottom: 12px;
     }
-    .sidebar-body::-webkit-scrollbar { width: 4px; }
+    .sidebar-body::-webkit-scrollbar { width: 3px; }
     .sidebar-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
     .pipeline-step {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 8px 16px;
-      font-size: 12px;
-      transition: background 0.15s;
+      padding: 7px 20px;
+      font-size: 13px;
     }
     .pipeline-dot {
-      width: 8px; height: 8px;
+      width: 7px; height: 7px;
       border-radius: 50%;
-      background: var(--border-light);
+      background: var(--border);
       flex-shrink: 0;
       transition: all 0.3s;
     }
-    .pipeline-dot.active { background: var(--blue); box-shadow: 0 0 6px var(--blue); }
+    .pipeline-dot.active { background: var(--accent); box-shadow: 0 0 5px rgba(201,100,66,0.4); }
     .pipeline-dot.pass { background: var(--green); }
     .pipeline-dot.fail { background: var(--red); }
-    .pipeline-dot.skip { background: var(--text-tertiary); opacity: 0.4; }
-    .pipeline-name { color: var(--text-secondary); flex: 1; }
-    .pipeline-ms { color: var(--text-tertiary); font-size: 10px; font-variant-numeric: tabular-nums; }
+    .pipeline-dot.skip { background: var(--border); opacity: 0.5; }
+    .pipeline-name { color: var(--text-secondary); flex: 1; font-weight: 400; }
+    .pipeline-ms { color: var(--text-tertiary); font-size: 11px; font-variant-numeric: tabular-nums; font-weight: 400; }
     .pipeline-line {
-      width: 1px; height: 12px;
+      width: 1px; height: 8px;
       background: var(--border);
-      margin-left: 19px;
+      margin-left: 23px;
     }
-    .pipeline-line.pass { background: var(--green); opacity: 0.4; }
-    .pipeline-line.fail { background: var(--red); opacity: 0.4; }
+    .pipeline-line.pass { background: var(--green); opacity: 0.3; }
+    .pipeline-line.fail { background: var(--red); opacity: 0.3; }
 
-    .sidebar-footer {
-      padding: 12px 16px;
-      border-top: 1px solid var(--border);
-      font-size: 10px;
-      color: var(--text-tertiary);
+    .cat-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 0 20px;
     }
-    .sidebar-footer a { color: var(--accent); text-decoration: none; }
-    .sidebar-footer a:hover { text-decoration: underline; }
+    .cat-tag {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
 
     .session-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 16px;
+      padding: 12px 20px;
       border-top: 1px solid var(--border);
     }
-    .session-bar span { font-size: 10px; color: var(--text-tertiary); font-family: monospace; }
+    .session-bar span { font-size: 11px; color: var(--text-tertiary); font-family: monospace; }
     .session-bar button {
-      font-size: 10px;
+      font-size: 11px;
+      font-weight: 500;
       color: var(--text-secondary);
-      background: none;
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 3px 8px;
+      border-radius: 6px;
+      padding: 4px 10px;
       cursor: pointer;
       transition: all 0.15s;
     }
-    .session-bar button:hover { border-color: var(--accent); color: var(--text); }
+    .session-bar button:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* ── Main chat area ── */
+    .sidebar-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      line-height: 1.6;
+    }
+    .sidebar-footer a { color: var(--accent); text-decoration: none; }
+    .sidebar-footer a:hover { text-decoration: underline; }
+
+    /* ── Chat area ── */
     .chat-area {
       flex: 1;
       display: flex;
       flex-direction: column;
       min-width: 0;
+      background: var(--bg);
     }
     .chat-header {
-      padding: 14px 24px;
+      padding: 14px 32px;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: var(--surface);
     }
-    .chat-header-title {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
-    }
+    .chat-header-title { font-size: 14px; font-weight: 600; color: var(--text); }
     .chat-header-stats {
       display: flex;
-      gap: 16px;
-      font-size: 11px;
+      gap: 20px;
+      font-size: 12px;
       color: var(--text-tertiary);
-      font-variant-numeric: tabular-nums;
     }
-    .chat-header-stats .stat-val { color: var(--text); font-weight: 500; }
+    .chat-header-stats .stat-val { color: var(--text); font-weight: 600; }
 
     .messages {
       flex: 1;
       overflow-y: auto;
-      padding: 24px 0;
+      padding: 32px 0;
     }
-    .messages::-webkit-scrollbar { width: 6px; }
+    .messages::-webkit-scrollbar { width: 5px; }
     .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-    /* Welcome state */
+    /* Welcome */
     .welcome {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100%;
-      padding: 0 24px;
+      padding: 0 32px;
       text-align: center;
     }
-    .welcome h2 {
-      font-size: 22px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      letter-spacing: -0.02em;
+    .welcome-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
     }
-    .welcome h2 span { color: var(--accent); }
+    .welcome-icon svg { width: 24px; height: 24px; stroke: var(--accent); fill: none; stroke-width: 1.5; }
+    .welcome h2 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
     .welcome p {
-      font-size: 14px;
+      font-size: 15px;
       color: var(--text-secondary);
-      max-width: 460px;
-      line-height: 1.6;
-      margin-bottom: 28px;
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 32px;
     }
     .examples-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      max-width: 520px;
+      max-width: 540px;
       width: 100%;
     }
     .example-chip {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
+      border-radius: 12px;
+      padding: 14px 16px;
       text-align: left;
       cursor: pointer;
       transition: all 0.15s;
-      font-size: 12px;
+      font-size: 13px;
       line-height: 1.5;
       color: var(--text-secondary);
     }
-    .example-chip:hover { border-color: var(--accent); background: var(--surface2); }
-    .example-chip .chip-label {
+    .example-chip:hover { border-color: var(--accent); background: var(--surface-hover); }
+    .chip-label {
       font-size: 11px;
       font-weight: 600;
       color: var(--text-tertiary);
       margin-bottom: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.02em;
     }
 
-    /* Message bubbles */
-    .msg-row {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-    .msg {
-      margin-bottom: 24px;
-      animation: fadeUp 0.25s ease-out;
-    }
+    /* Messages */
+    .msg-row { max-width: 700px; margin: 0 auto; padding: 0 32px; }
+    .msg { margin-bottom: 28px; animation: fadeUp 0.2s ease-out; }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
     .msg-sender {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      color: var(--text);
     }
-    .msg-sender .sender-icon {
-      width: 20px; height: 20px;
-      border-radius: 5px;
+    .sender-icon {
+      width: 22px; height: 22px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -264,107 +273,116 @@
     .msg.blocked .sender-icon { background: var(--red-soft); color: var(--red); }
 
     .msg-body {
-      font-size: 14px;
+      font-size: 15px;
       line-height: 1.7;
       color: var(--text);
-      padding: 14px 18px;
-      border-radius: 12px;
     }
     .msg.user .msg-body {
-      background: var(--user-bubble);
+      background: var(--surface);
       border: 1px solid var(--border);
-    }
-    .msg.assistant .msg-body {
-      background: transparent;
+      border-radius: 14px;
+      padding: 16px 20px;
     }
     .msg.blocked .msg-body {
       background: var(--red-soft);
-      border: 1px solid rgba(248,113,113,0.2);
+      border: 1px solid rgba(196,75,63,0.15);
+      border-radius: 14px;
+      padding: 16px 20px;
     }
+    .msg.blocked .msg-body strong { color: var(--red); }
 
     .msg-meta {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-top: 8px;
-      font-size: 11px;
+      margin-top: 10px;
+      font-size: 12px;
       color: var(--text-tertiary);
     }
     .verdict-pill {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
       padding: 2px 8px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      border-radius: 5px;
+      letter-spacing: 0.02em;
     }
     .verdict-pill.safe { background: var(--green-soft); color: var(--green); }
     .verdict-pill.block { background: var(--red-soft); color: var(--red); }
     .verdict-pill.review { background: var(--yellow-soft); color: var(--yellow); }
 
-    /* Reasoning drawer inside message */
     .reasoning-toggle {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-tertiary);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 4px;
+      margin-top: 8px;
       transition: color 0.15s;
     }
-    .reasoning-toggle:hover { color: var(--text-secondary); }
+    .reasoning-toggle:hover { color: var(--accent); }
     .reasoning-drawer {
-      margin-top: 10px;
-      padding: 12px;
+      margin-top: 12px;
+      padding: 14px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 12px;
-      line-height: 1.6;
+      border-radius: 10px;
     }
     .reasoning-step {
       display: flex;
       align-items: flex-start;
-      gap: 8px;
+      gap: 10px;
       padding: 6px 0;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--border-light);
+      font-size: 13px;
     }
     .reasoning-step:last-child { border-bottom: none; }
     .reasoning-step-dot {
       width: 6px; height: 6px;
       border-radius: 50%;
-      margin-top: 5px;
+      margin-top: 6px;
       flex-shrink: 0;
     }
     .reasoning-step-name {
       font-weight: 500;
       color: var(--text-secondary);
-      min-width: 90px;
+      min-width: 100px;
       font-family: monospace;
-      font-size: 11px;
+      font-size: 12px;
     }
-    .reasoning-step-result { color: var(--text-tertiary); font-size: 11px; flex: 1; }
-    .reasoning-step-ms { color: var(--text-tertiary); font-size: 10px; font-family: monospace; }
+    .reasoning-step-result { color: var(--text-tertiary); font-size: 12px; flex: 1; }
+    .reasoning-step-ms { color: var(--text-tertiary); font-size: 11px; font-family: monospace; }
     .reasoning-detail {
-      margin-top: 6px;
-      padding: 8px 10px;
+      margin-top: 8px;
+      padding: 10px 12px;
       background: var(--bg);
-      border-radius: 6px;
-      font-size: 11px;
+      border-radius: 8px;
+      font-size: 12px;
       color: var(--text-secondary);
       white-space: pre-wrap;
-      max-height: 160px;
+      max-height: 180px;
       overflow-y: auto;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
-    /* ── Input bar ── */
+    .output-fw-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    /* ── Input ── */
     .input-bar {
-      padding: 16px 24px 20px;
-      border-top: 1px solid var(--border);
+      padding: 16px 32px 24px;
+      background: var(--bg);
     }
     .input-wrapper {
-      max-width: 680px;
+      max-width: 700px;
       margin: 0 auto;
       position: relative;
     }
@@ -372,25 +390,28 @@
       width: 100%;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 52px 14px 16px;
+      border-radius: 14px;
+      padding: 14px 56px 14px 18px;
       color: var(--text);
       font-family: inherit;
-      font-size: 14px;
+      font-size: 15px;
       line-height: 1.5;
       resize: none;
       outline: none;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, box-shadow 0.15s;
       min-height: 52px;
       max-height: 160px;
     }
-    .input-wrapper textarea:focus { border-color: var(--accent); }
+    .input-wrapper textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
     .input-wrapper textarea::placeholder { color: var(--text-tertiary); }
     .send-btn {
       position: absolute;
-      right: 8px;
-      bottom: 8px;
-      width: 36px; height: 36px;
+      right: 10px;
+      bottom: 10px;
+      width: 34px; height: 34px;
       border-radius: 8px;
       background: var(--accent);
       border: none;
@@ -398,20 +419,19 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.15s;
+      transition: all 0.15s;
     }
-    .send-btn:hover { opacity: 0.85; }
+    .send-btn:hover { background: var(--accent-hover); }
     .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
     .send-btn svg { width: 16px; height: 16px; fill: white; }
 
-    /* Thinking indicator */
     .thinking {
       display: flex;
       gap: 4px;
-      padding: 8px 0;
+      padding: 10px 0;
     }
     .thinking-dot {
-      width: 6px; height: 6px;
+      width: 5px; height: 5px;
       background: var(--text-tertiary);
       border-radius: 50%;
       animation: thinking 1.2s ease-in-out infinite;
@@ -419,87 +439,49 @@
     .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
     .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
     @keyframes thinking {
-      0%, 100% { opacity: 0.3; transform: translateY(0); }
-      50% { opacity: 1; transform: translateY(-3px); }
+      0%, 100% { opacity: 0.2; transform: translateY(0); }
+      50% { opacity: 0.8; transform: translateY(-2px); }
     }
 
-    /* Output firewall badge */
-    .output-fw-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 10px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      margin-top: 8px;
-    }
-
-    /* Mobile */
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .examples-grid { grid-template-columns: 1fr; }
+      .msg-row { padding: 0 16px; }
+      .input-bar { padding: 12px 16px 16px; }
+      .chat-header { padding: 14px 16px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <h1>Prompt <span>Firewall</span></h1>
-      <p>Agentic prompt injection detection with chain-of-thought reasoning</p>
+      <h1>Prompt Firewall</h1>
+      <p>Multi-agent prompt injection detection with chain-of-thought reasoning</p>
     </div>
-
     <div class="sidebar-body">
       <div class="sidebar-section">Pipeline</div>
-
-      <div class="pipeline-step" id="ps-decoder">
-        <div class="pipeline-dot" id="pd-decoder"></div>
-        <span class="pipeline-name">Decoder</span>
-        <span class="pipeline-ms" id="pm-decoder"></span>
-      </div>
+      <div class="pipeline-step"><div class="pipeline-dot" id="pd-decoder"></div><span class="pipeline-name">Decoder</span><span class="pipeline-ms" id="pm-decoder"></span></div>
       <div class="pipeline-line" id="pl-1"></div>
-      <div class="pipeline-step" id="ps-regex">
-        <div class="pipeline-dot" id="pd-regex"></div>
-        <span class="pipeline-name">Regex Engine</span>
-        <span class="pipeline-ms" id="pm-regex"></span>
-      </div>
+      <div class="pipeline-step"><div class="pipeline-dot" id="pd-regex"></div><span class="pipeline-name">Regex Engine</span><span class="pipeline-ms" id="pm-regex"></span></div>
       <div class="pipeline-line" id="pl-2"></div>
-      <div class="pipeline-step" id="ps-pg">
-        <div class="pipeline-dot" id="pd-pg"></div>
-        <span class="pipeline-name">Prompt Guard</span>
-        <span class="pipeline-ms" id="pm-pg"></span>
-      </div>
+      <div class="pipeline-step"><div class="pipeline-dot" id="pd-pg"></div><span class="pipeline-name">Prompt Guard</span><span class="pipeline-ms" id="pm-pg"></span></div>
       <div class="pipeline-line" id="pl-3"></div>
-      <div class="pipeline-step" id="ps-cot">
-        <div class="pipeline-dot" id="pd-cot"></div>
-        <span class="pipeline-name">CoT Classifier</span>
-        <span class="pipeline-ms" id="pm-cot"></span>
-      </div>
+      <div class="pipeline-step"><div class="pipeline-dot" id="pd-cot"></div><span class="pipeline-name">CoT Classifier</span><span class="pipeline-ms" id="pm-cot"></span></div>
       <div class="pipeline-line" id="pl-4"></div>
-      <div class="pipeline-step" id="ps-mt">
-        <div class="pipeline-dot" id="pd-mt"></div>
-        <span class="pipeline-name">Multi-Turn</span>
-        <span class="pipeline-ms" id="pm-mt"></span>
-      </div>
+      <div class="pipeline-step"><div class="pipeline-dot" id="pd-mt"></div><span class="pipeline-name">Multi-Turn</span><span class="pipeline-ms" id="pm-mt"></span></div>
       <div class="pipeline-line" id="pl-5"></div>
-      <div class="pipeline-step" id="ps-outfw">
-        <div class="pipeline-dot" id="pd-outfw"></div>
-        <span class="pipeline-name">Output Firewall</span>
-        <span class="pipeline-ms" id="pm-outfw"></span>
-      </div>
+      <div class="pipeline-step"><div class="pipeline-dot" id="pd-outfw"></div><span class="pipeline-name">Output Firewall</span><span class="pipeline-ms" id="pm-outfw"></span></div>
 
-      <div class="sidebar-section" style="margin-top:20px">Categories</div>
-      <div style="padding:0 16px">
-        <div style="display:flex;flex-wrap:wrap;gap:4px">
-          <span style="font-size:10px;padding:2px 6px;border-radius:3px;background:var(--red-soft);color:var(--red)">role_override</span>
-          <span style="font-size:10px;padding:2px 6px;border-radius:3px;background:var(--red-soft);color:var(--red)">instruction_override</span>
-          <span style="font-size:10px;padding:2px 6px;border-radius:3px;background:var(--red-soft);color:var(--red)">jailbreak</span>
-          <span style="font-size:10px;padding:2px 6px;border-radius:3px;background:var(--red-soft);color:var(--red)">prompt_leaking</span>
-          <span style="font-size:10px;padding:2px 6px;border-radius:3px;background:var(--yellow-soft);color:var(--yellow)">token_smuggling</span>
-          <span style="font-size:10px;padding:2px 6px;border-radius:3px;background:var(--yellow-soft);color:var(--yellow)">indirect_injection</span>
-          <span style="font-size:10px;padding:2px 6px;border-radius:3px;background:var(--yellow-soft);color:var(--yellow)">context_manipulation</span>
-        </div>
+      <div class="sidebar-section" style="margin-top:20px">Detects</div>
+      <div class="cat-tags">
+        <span class="cat-tag" style="background:var(--red-soft);color:var(--red)">role_override</span>
+        <span class="cat-tag" style="background:var(--red-soft);color:var(--red)">instruction_override</span>
+        <span class="cat-tag" style="background:var(--red-soft);color:var(--red)">jailbreak</span>
+        <span class="cat-tag" style="background:var(--red-soft);color:var(--red)">prompt_leaking</span>
+        <span class="cat-tag" style="background:var(--yellow-soft);color:var(--yellow)">token_smuggling</span>
+        <span class="cat-tag" style="background:var(--yellow-soft);color:var(--yellow)">indirect_injection</span>
+        <span class="cat-tag" style="background:var(--yellow-soft);color:var(--yellow)">context_manipulation</span>
       </div>
     </div>
 
@@ -507,15 +489,13 @@
       <span id="session-display"></span>
       <button onclick="newSession()">New session</button>
     </div>
-
     <div class="sidebar-footer">
-      <a href="https://github.com/TDahiya/prompt-firewall" target="_blank">GitHub</a>
-      &middot; Built by <a href="https://github.com/TDahiya" target="_blank">Tanishq Dahiya</a>
-      <br>MSc Computing (AI), DCU
+      Built by <a href="https://github.com/TDahiya" target="_blank">Tanishq Dahiya</a><br>
+      MSc Computing (AI), DCU
+      &middot; <a href="https://github.com/TDahiya/prompt-firewall" target="_blank">GitHub</a>
     </div>
   </aside>
 
-  <!-- Chat area -->
   <div class="chat-area">
     <div class="chat-header">
       <div class="chat-header-title">Prompt Firewall</div>
@@ -525,15 +505,16 @@
         <span><span class="stat-val" id="hs-layer"></span></span>
       </div>
     </div>
-
     <div class="messages" id="messages">
       <div class="welcome" id="welcome">
-        <h2>Prompt <span>Firewall</span></h2>
-        <p>Test the agentic prompt injection detection pipeline. Every message passes through 6 analysis stages before reaching the LLM. Try an attack or a clean prompt.</p>
+        <div class="welcome-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h2>Prompt Firewall</h2>
+        <p>Every message passes through a 6-stage agentic analysis pipeline before reaching the LLM. Try an attack prompt or a clean input below.</p>
         <div class="examples-grid" id="examples"></div>
       </div>
     </div>
-
     <div class="input-bar">
       <div class="input-wrapper">
         <textarea id="prompt-input" rows="1" placeholder="Send a message..." onkeydown="handleKey(event)" oninput="autoGrow(this)"></textarea>
@@ -562,8 +543,9 @@ function createWelcome() {
   w.className = 'welcome';
   w.id = 'welcome';
   w.innerHTML = `
-    <h2>Prompt <span>Firewall</span></h2>
-    <p>Test the agentic prompt injection detection pipeline. Every message passes through 6 analysis stages before reaching the LLM. Try an attack or a clean prompt.</p>
+    <div class="welcome-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h2>Prompt Firewall</h2>
+    <p>Every message passes through a 6-stage agentic analysis pipeline before reaching the LLM. Try an attack prompt or a clean input below.</p>
     <div class="examples-grid" id="examples"></div>`;
   populateExamples(w.querySelector('#examples'));
   return w;
@@ -584,270 +566,133 @@ function populateExamples(container) {
   EXAMPLES.forEach(ex => {
     const btn = document.createElement('button');
     btn.className = 'example-chip';
-    btn.innerHTML = `<div class="chip-label">${ex.label}</div>${ex.text.slice(0, 55)}${ex.text.length > 55 ? '...' : ''}`;
+    btn.innerHTML = `<div class="chip-label">${ex.label}</div>${ex.text.slice(0, 58)}${ex.text.length > 58 ? '...' : ''}`;
     btn.onclick = () => { document.getElementById('prompt-input').value = ex.text; send(); };
     container.appendChild(btn);
   });
 }
 populateExamples(document.getElementById('examples'));
 
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
-}
-
-function autoGrow(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
-}
-
-function escapeHtml(s) {
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
+function autoGrow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
+function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
 const PIPE_STEPS = ['decoder','regex','pg','cot','mt','outfw'];
 const PIPE_LINES = ['pl-1','pl-2','pl-3','pl-4','pl-5'];
 
 function resetPipeline() {
-  PIPE_STEPS.forEach(s => {
-    document.getElementById('pd-' + s).className = 'pipeline-dot';
-    document.getElementById('pm-' + s).textContent = '';
-  });
-  PIPE_LINES.forEach(l => {
-    document.getElementById(l).className = 'pipeline-line';
-  });
+  PIPE_STEPS.forEach(s => { document.getElementById('pd-' + s).className = 'pipeline-dot'; document.getElementById('pm-' + s).textContent = ''; });
+  PIPE_LINES.forEach(l => { document.getElementById(l).className = 'pipeline-line'; });
 }
 
 function updatePipeline(steps, fw) {
   resetPipeline();
-  const map = {};
-  steps.forEach(s => map[s.name] = s);
-
-  const pipeMap = {
-    decoder: 'decoder',
-    regex: 'regex',
-    prompt_guard: 'pg',
-    cot_classifier: 'cot',
-    multi_turn: 'mt',
-    output_firewall: 'outfw',
-  };
-
+  const pipeMap = { decoder:'decoder', regex:'regex', prompt_guard:'pg', cot_classifier:'cot', multi_turn:'mt', output_firewall:'outfw' };
   let lastIdx = -1;
   steps.forEach(s => {
-    const key = pipeMap[s.name];
-    if (!key) return;
-    const dot = document.getElementById('pd-' + key);
-    const ms = document.getElementById('pm-' + key);
-    ms.textContent = s.latency_ms + 'ms';
-
-    if (s.result === 'BLOCK' || s.result === 'REVIEW') {
-      dot.className = 'pipeline-dot fail';
-    } else if (s.result === 'error' || s.result === 'skipped') {
-      dot.className = 'pipeline-dot skip';
-    } else {
-      dot.className = 'pipeline-dot pass';
-    }
-
-    const idx = PIPE_STEPS.indexOf(key);
-    if (idx > lastIdx) lastIdx = idx;
+    const key = pipeMap[s.name]; if (!key) return;
+    document.getElementById('pm-' + key).textContent = s.latency_ms + 'ms';
+    const cls = (s.result === 'BLOCK' || s.result === 'REVIEW') ? 'fail' : (s.result === 'error' || s.result === 'skipped') ? 'skip' : 'pass';
+    document.getElementById('pd-' + key).className = 'pipeline-dot ' + cls;
+    const idx = PIPE_STEPS.indexOf(key); if (idx > lastIdx) lastIdx = idx;
   });
-
-  // color connecting lines up to the last active step
   for (let i = 0; i < lastIdx && i < PIPE_LINES.length; i++) {
-    const line = document.getElementById(PIPE_LINES[i]);
-    line.className = 'pipeline-line ' + (fw.verdict === 'BLOCK' ? 'fail' : 'pass');
+    document.getElementById(PIPE_LINES[i]).className = 'pipeline-line ' + (fw.verdict === 'BLOCK' ? 'fail' : 'pass');
   }
-
-  // mark skipped steps
-  PIPE_STEPS.forEach(key => {
-    const dot = document.getElementById('pd-' + key);
-    if (dot.className === 'pipeline-dot') dot.className = 'pipeline-dot skip';
-  });
+  PIPE_STEPS.forEach(key => { const d = document.getElementById('pd-' + key); if (d.className === 'pipeline-dot') d.className = 'pipeline-dot skip'; });
 }
 
 function addMsg(type, content, fw, steps, llmResponse) {
-  const welcome = document.getElementById('welcome');
-  if (welcome) welcome.remove();
-
+  const welcome = document.getElementById('welcome'); if (welcome) welcome.remove();
   const container = document.getElementById('messages');
-  const row = document.createElement('div');
-  row.className = 'msg-row';
+  const row = document.createElement('div'); row.className = 'msg-row';
   const msg = document.createElement('div');
 
   if (type === 'user') {
     msg.className = 'msg user';
-    msg.innerHTML = `
-      <div class="msg-sender">
-        <div class="sender-icon">Y</div>
-        <span>You</span>
-      </div>
-      <div class="msg-body">${escapeHtml(content)}</div>`;
+    msg.innerHTML = `<div class="msg-sender"><div class="sender-icon">Y</div>You</div><div class="msg-body">${escapeHtml(content)}</div>`;
   } else if (type === 'blocked') {
     msg.className = 'msg blocked';
-    const catLabel = fw.category !== 'none' ? fw.category : '';
+    const cat = fw.category !== 'none' ? fw.category : 'attack';
     let meta = `<span class="verdict-pill block">Blocked</span>`;
-    if (catLabel) meta += `<span>${catLabel}</span>`;
+    if (fw.category !== 'none') meta += `<span>${fw.category}</span>`;
     meta += `<span>${fw.latency_ms}ms</span>`;
     if (fw.matched_pattern) meta += `<span>${escapeHtml(fw.matched_pattern)}</span>`;
 
-    let reasoningHtml = '';
-    if (steps && steps.length) {
-      const stepsHtml = steps.map(s => {
-        const dotColor = (s.result === 'BLOCK' || s.result === 'REVIEW') ? 'var(--red)' : s.result === 'error' ? 'var(--yellow)' : 'var(--green)';
-        let html = `<div class="reasoning-step">
-          <div class="reasoning-step-dot" style="background:${dotColor}"></div>
-          <div class="reasoning-step-name">${s.name}</div>
-          <div class="reasoning-step-result">${escapeHtml(s.result)}</div>
-          <div class="reasoning-step-ms">${s.latency_ms}ms</div>
-        </div>`;
-        if (s.detail) html += `<div class="reasoning-detail">${escapeHtml(s.detail)}</div>`;
-        return html;
-      }).join('');
-
-      const rid = 'r-' + Math.random().toString(36).slice(2);
-      reasoningHtml = `
-        <span class="reasoning-toggle" onclick="document.getElementById('${rid}').classList.toggle('hidden')">
-          View pipeline details
-        </span>
-        <div class="reasoning-drawer hidden" id="${rid}">${stepsHtml}</div>`;
-    }
-
+    let reasoning = buildReasoning(steps);
     msg.innerHTML = `
-      <div class="msg-sender">
-        <div class="sender-icon">!</div>
-        <span>Firewall</span>
-      </div>
-      <div class="msg-body">
-        Prompt injection detected and blocked. This input was classified as <strong>${catLabel || 'an attack'}</strong> with ${Math.round(fw.confidence * 100)}% confidence.
-        ${fw.decoded_text ? `<br><br>Decoded content: <code style="font-size:12px;background:var(--surface);padding:2px 6px;border-radius:4px">${escapeHtml(fw.decoded_text.slice(0, 120))}</code>` : ''}
-      </div>
-      <div class="msg-meta">${meta}</div>
-      ${reasoningHtml}`;
+      <div class="msg-sender"><div class="sender-icon">!</div>Firewall</div>
+      <div class="msg-body">Prompt injection detected. Classified as <strong>${cat}</strong> with ${Math.round(fw.confidence * 100)}% confidence.${fw.decoded_text ? '<br><br>Decoded: <code style="font-size:12px;background:var(--bg);padding:2px 6px;border-radius:4px">' + escapeHtml(fw.decoded_text.slice(0, 120)) + '</code>' : ''}</div>
+      <div class="msg-meta">${meta}</div>${reasoning}`;
   } else {
     msg.className = 'msg assistant';
-    let meta = `<span class="verdict-pill safe">Safe</span>`;
-    meta += `<span>${fw.latency_ms}ms</span>`;
-    meta += `<span>${steps.length} steps</span>`;
-
-    let outputFwHtml = '';
+    let meta = `<span class="verdict-pill safe">Safe</span><span>${fw.latency_ms}ms</span><span>${steps.length} steps</span>`;
+    let outputBadge = '';
     if (fw.output_verdict) {
-      const owSafe = fw.output_verdict === 'SAFE';
-      outputFwHtml = `<div class="output-fw-badge" style="background:${owSafe ? 'var(--green-soft)' : 'var(--red-soft)'};color:${owSafe ? 'var(--green)' : 'var(--red)'}">
-        Output firewall: ${fw.output_verdict}
-      </div>`;
+      const ok = fw.output_verdict === 'SAFE';
+      outputBadge = `<div class="output-fw-badge" style="background:${ok ? 'var(--green-soft)' : 'var(--red-soft)'};color:${ok ? 'var(--green)' : 'var(--red)'}">Output firewall: ${fw.output_verdict}</div>`;
     }
-
-    let reasoningHtml = '';
-    if (steps && steps.length) {
-      const stepsHtml = steps.map(s => {
-        const dotColor = (s.result === 'BLOCK' || s.result === 'REVIEW') ? 'var(--red)' : s.result === 'error' ? 'var(--yellow)' : 'var(--green)';
-        let html = `<div class="reasoning-step">
-          <div class="reasoning-step-dot" style="background:${dotColor}"></div>
-          <div class="reasoning-step-name">${s.name}</div>
-          <div class="reasoning-step-result">${escapeHtml(s.result)}</div>
-          <div class="reasoning-step-ms">${s.latency_ms}ms</div>
-        </div>`;
-        if (s.detail) html += `<div class="reasoning-detail">${escapeHtml(s.detail)}</div>`;
-        return html;
-      }).join('');
-
-      const rid = 'r-' + Math.random().toString(36).slice(2);
-      reasoningHtml = `
-        <span class="reasoning-toggle" onclick="document.getElementById('${rid}').classList.toggle('hidden')">
-          View pipeline details
-        </span>
-        <div class="reasoning-drawer hidden" id="${rid}">${stepsHtml}</div>`;
-    }
-
+    let reasoning = buildReasoning(steps);
     msg.innerHTML = `
-      <div class="msg-sender">
-        <div class="sender-icon">F</div>
-        <span>Firewall</span>
-      </div>
-      <div class="msg-body">
-        ${llmResponse ? escapeHtml(llmResponse) : '<span style="color:var(--text-tertiary)">LLM layer is disabled. Prompt was classified as safe.</span>'}
-        ${outputFwHtml}
-      </div>
-      <div class="msg-meta">${meta}</div>
-      ${reasoningHtml}`;
+      <div class="msg-sender"><div class="sender-icon">F</div>Firewall</div>
+      <div class="msg-body">${llmResponse ? escapeHtml(llmResponse) : '<span style="color:var(--text-tertiary)">LLM layer disabled. Prompt classified as safe.</span>'}${outputBadge}</div>
+      <div class="msg-meta">${meta}</div>${reasoning}`;
   }
-
   row.appendChild(msg);
   container.appendChild(row);
   container.scrollTop = container.scrollHeight;
 }
 
+function buildReasoning(steps) {
+  if (!steps || !steps.length) return '';
+  const rid = 'r-' + Math.random().toString(36).slice(2);
+  const html = steps.map(s => {
+    const c = (s.result === 'BLOCK' || s.result === 'REVIEW') ? 'var(--red)' : s.result === 'error' ? 'var(--yellow)' : 'var(--green)';
+    let h = `<div class="reasoning-step"><div class="reasoning-step-dot" style="background:${c}"></div><div class="reasoning-step-name">${s.name}</div><div class="reasoning-step-result">${escapeHtml(s.result)}</div><div class="reasoning-step-ms">${s.latency_ms}ms</div></div>`;
+    if (s.detail) h += `<div class="reasoning-detail">${escapeHtml(s.detail)}</div>`;
+    return h;
+  }).join('');
+  return `<span class="reasoning-toggle" onclick="document.getElementById('${rid}').classList.toggle('hidden')">View pipeline details</span><div class="reasoning-drawer hidden" id="${rid}">${html}</div>`;
+}
+
 function showThinking() {
+  const welcome = document.getElementById('welcome'); if (welcome) welcome.remove();
   const container = document.getElementById('messages');
-  const welcome = document.getElementById('welcome');
-  if (welcome) welcome.remove();
-  const row = document.createElement('div');
-  row.className = 'msg-row';
-  row.id = 'thinking-msg';
-  row.innerHTML = `<div class="msg assistant">
-    <div class="msg-sender"><div class="sender-icon">F</div><span>Firewall</span></div>
-    <div class="thinking"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div>
-  </div>`;
+  const row = document.createElement('div'); row.className = 'msg-row'; row.id = 'thinking-msg';
+  row.innerHTML = `<div class="msg assistant"><div class="msg-sender"><div class="sender-icon">F</div>Firewall</div><div class="thinking"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div></div>`;
   container.appendChild(row);
   container.scrollTop = container.scrollHeight;
 }
-
-function removeThinking() {
-  const el = document.getElementById('thinking-msg');
-  if (el) el.remove();
-}
+function removeThinking() { const el = document.getElementById('thinking-msg'); if (el) el.remove(); }
 
 async function send() {
   const input = document.getElementById('prompt-input');
-  const text = input.value.trim();
-  if (!text) return;
-
-  input.value = '';
-  input.style.height = 'auto';
-  const btn = document.getElementById('send-btn');
-  btn.disabled = true;
+  const text = input.value.trim(); if (!text) return;
+  input.value = ''; input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
 
   addMsg('user', text);
   showThinking();
-
-  // Animate pipeline dots
   resetPipeline();
-  PIPE_STEPS.forEach((s, i) => {
-    setTimeout(() => {
-      document.getElementById('pd-' + s).className = 'pipeline-dot active';
-    }, i * 120);
-  });
+  PIPE_STEPS.forEach((s, i) => { setTimeout(() => { document.getElementById('pd-' + s).className = 'pipeline-dot active'; }, i * 100); });
 
   try {
-    const res = await fetch('/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, session_id: sessionId }),
-    });
+    const res = await fetch('/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, session_id: sessionId }) });
     const data = await res.json();
-    const fw = data.firewall;
-    const steps = fw.agent_steps || [];
-
+    const fw = data.firewall, steps = fw.agent_steps || [];
     removeThinking();
     updatePipeline(steps, fw);
-
-    // Header stats
     document.getElementById('header-stats').style.display = 'flex';
     document.getElementById('hs-latency').textContent = fw.latency_ms;
     document.getElementById('hs-steps').textContent = steps.length;
     document.getElementById('hs-layer').textContent = fw.layer || '-';
-
-    if (fw.verdict === 'SAFE') {
-      addMsg('assistant', text, fw, steps, data.llm_response);
-    } else {
-      addMsg('blocked', text, fw, steps);
-    }
+    if (fw.verdict === 'SAFE') addMsg('assistant', text, fw, steps, data.llm_response);
+    else addMsg('blocked', text, fw, steps);
   } catch (err) {
     removeThinking();
-    addMsg('blocked', 'Error: ' + err.message, { verdict: 'BLOCK', category: 'none', confidence: 0, latency_ms: 0 }, []);
+    addMsg('blocked', 'Error: ' + err.message, { verdict:'BLOCK', category:'none', confidence:0, latency_ms:0 }, []);
   } finally {
-    btn.disabled = false;
+    document.getElementById('send-btn').disabled = false;
     document.getElementById('prompt-input').focus();
   }
 }
