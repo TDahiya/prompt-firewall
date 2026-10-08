@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: prompt-firewall
+    runtime: docker
+    plan: free
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: ENABLE_LLM_LAYER
+        value: "true"
+      - key: CLASSIFIER_CONFIDENCE_THRESHOLD
+        value: "0.85"
+      - key: CLASSIFIER_MODEL
+        value: "qwen/qwen3.8-27b"
+      - key: PROMPT_GUARD_MODEL
+        value: "meta-llama/llama-prompt-guard-2-86m"
+      - key: ENABLE_PROMPT_GUARD
+        value: "true"
+      - key: ENABLE_DECODER
+        value: "true"
+      - key: ENABLE_OUTPUT_FIREWALL
+        value: "true"
+      - key: ENABLE_MULTI_TURN
+        value: "true"
