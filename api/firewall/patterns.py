@@ -95,6 +95,18 @@ _RAW: list[tuple[str, AttackCategory, str]] = [
      AttackCategory.context_manipulation, "fabricated prior agreement"),
     (r"(remember|recall)\s+(that\s+)?(you\s+)?(agreed|said|told\s+me|confirmed)\s+(earlier|before|last\s+time)",
      AttackCategory.context_manipulation, "fabricated memory claim"),
+
+    # ── multi-turn escalation ────────────────────────────────────────────────
+    (r"(great|good|perfect|exactly),?\s+now\s+(that\s+you'?ve?\s+)?(do|give|show|tell|reveal|ignore|drop)",
+     AttackCategory.context_manipulation, "multi-turn compliance escalation"),
+    (r"you\s+(just|already)\s+(said|showed|proved|demonstrated)\s+(that\s+)?(you\s+)?(can|could|will|are\s+able)",
+     AttackCategory.context_manipulation, "false precedent claim"),
+
+    # ── prompt_leaking (extended) ────────────────────────────────────────────
+    (r"(translate|convert|encode)\s+(your\s+)?(system\s+prompt|instructions?)\s+(to|into|as)\s+(base64|hex|morse|pig\s+latin|rot13)",
+     AttackCategory.prompt_leaking, "encoded system prompt extraction"),
+    (r"(summarize|rephrase|paraphrase)\s+(your\s+)?(system\s+prompt|instructions?|initial\s+rules?)",
+     AttackCategory.prompt_leaking, "paraphrased prompt extraction"),
 ]
 
 # Compile once at import time
