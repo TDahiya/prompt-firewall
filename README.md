@@ -2,8 +2,8 @@
 
 > Real-time prompt injection detection and blocking for production LLM applications.
 
-> [!NOTE]
-> README-only for now. Implementation coming soon.
+**Live demo:** [prompt-firewall-kdwm.onrender.com](https://prompt-firewall-kdwm.onrender.com)
+Render's free tier sleeps after 15 minutes idle, so the first request takes about a minute to wake.
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
